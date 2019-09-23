@@ -3,6 +3,7 @@
   "description": "Inside sales Campaign follow up mails",
   "main": "Main.xaml",
   "dependencies": {
+    "Technovert.Helpers.Email": "[1.0.3]",
     "UiPath.Excel.Activities": "[2.8.0-alpha.471192]",
     "UiPath.Mail.Activities": "[1.7.0-alpha.475516]",
     "UiPath.System.Activities": "[19.9.0-alpha.484252]",

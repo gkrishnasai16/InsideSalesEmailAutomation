@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="ProcessTransaction" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:p="http://schemas.uipath.com/workflow/activities/word" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:snm="clr-namespace:System.Net.Mail;assembly=System" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="ProcessTransaction" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:p="http://schemas.uipath.com/workflow/activities/word" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:snm="clr-namespace:System.Net.Mail;assembly=System" xmlns:the="clr-namespace:Technovert.Helpers.Email;assembly=Technovert.Helpers.Email" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="in_TransactionItem" Type="InArgument(sd:DataRow)" />
     <x:Property Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
@@ -7,10 +7,10 @@
   <mva:VisualBasic.Settings>
     <x:Null />
   </mva:VisualBasic.Settings>
-  <sap:VirtualizedContainerService.HintSize>1391,5436</sap:VirtualizedContainerService.HintSize>
+  <sap:VirtualizedContainerService.HintSize>899,4022</sap:VirtualizedContainerService.HintSize>
   <sap2010:WorkflowViewState.IdRef>ProcessTransaction_1</sap2010:WorkflowViewState.IdRef>
   <TextExpression.NamespacesForImplementation>
-    <scg:List x:TypeArguments="x:String" Capacity="22">
+    <scg:List x:TypeArguments="x:String" Capacity="44">
       <x:String>System.Activities</x:String>
       <x:String>System.Activities.Statements</x:String>
       <x:String>System.Activities.Expressions</x:String>
@@ -33,10 +33,11 @@
       <x:String>UiPath.Core.Activities</x:String>
       <x:String>System.Windows.Markup</x:String>
       <x:String>Microsoft.VisualBasic.CompilerServices</x:String>
+      <x:String>System.Xml.Serialization</x:String>
     </scg:List>
   </TextExpression.NamespacesForImplementation>
   <TextExpression.ReferencesForImplementation>
-    <scg:List x:TypeArguments="AssemblyReference" Capacity="22">
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="44">
       <AssemblyReference>System.Activities</AssemblyReference>
       <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
       <AssemblyReference>mscorlib</AssemblyReference>
@@ -59,9 +60,10 @@
       <AssemblyReference>UiPath.System.Activities</AssemblyReference>
       <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
       <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
-  <Sequence sap2010:Annotation.AnnotationText="Description: In this file all other process specific files will be invoked. If an application exception occurs, the current transaction can be retried. If a BRE is thrown, the transaction will be skipped. Can be a flowchart or sequence. " DisplayName="ProcessTransaction" sap:VirtualizedContainerService.HintSize="1371,5376" sap2010:WorkflowViewState.IdRef="Sequence_1">
+  <Sequence sap2010:Annotation.AnnotationText="Description: In this file all other process specific files will be invoked. If an application exception occurs, the current transaction can be retried. If a BRE is thrown, the transaction will be skipped. Can be a flowchart or sequence. " DisplayName="ProcessTransaction" sap:VirtualizedContainerService.HintSize="879,3962" sap2010:WorkflowViewState.IdRef="Sequence_1">
     <Sequence.Variables>
       <Variable x:TypeArguments="sd:DataTable" Name="TemplatesPath" />
       <Variable x:TypeArguments="sd:DataTable" Name="Templates" />
@@ -74,6 +76,9 @@
       <Variable x:TypeArguments="x:String" Name="bodyFormatted" />
       <Variable x:TypeArguments="ui:GenericValue" Name="subject" />
       <Variable x:TypeArguments="x:TimeSpan" Name="delay" />
+      <Variable x:TypeArguments="x:Int32" Name="Column_Number" />
+      <Variable x:TypeArguments="x:String" Name="name_column" />
+      <Variable x:TypeArguments="x:Int32" Name="modulo" />
     </Sequence.Variables>
     <sap:WorkflowViewStateService.ViewState>
       <scg:Dictionary x:TypeArguments="x:String, x:Object">
@@ -81,14 +86,14 @@
         <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
-    <ui:ReadRange AddHeaders="True" DataTable="[TemplatesPath]" DisplayName="Read Range" sap:VirtualizedContainerService.HintSize="1329,87" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="TemplatesPath" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
+    <ui:ReadRange AddHeaders="True" DataTable="[TemplatesPath]" DisplayName="Read Range" sap:VirtualizedContainerService.HintSize="837,87" sap2010:WorkflowViewState.IdRef="ReadRange_1" SheetName="TemplatesPath" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
       <ui:ReadRange.Range>
         <InArgument x:TypeArguments="x:String">
           <Literal x:TypeArguments="x:String" Value="" />
         </InArgument>
       </ui:ReadRange.Range>
     </ui:ReadRange>
-    <Assign sap:VirtualizedContainerService.HintSize="1329,60" sap2010:WorkflowViewState.IdRef="Assign_1">
+    <Assign sap:VirtualizedContainerService.HintSize="837,60" sap2010:WorkflowViewState.IdRef="Assign_1">
       <Assign.To>
         <OutArgument x:TypeArguments="s:DateTime">[todaysDate]</OutArgument>
       </Assign.To>
@@ -96,19 +101,19 @@
         <InArgument x:TypeArguments="s:DateTime">[DateTime.Today.Date]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:LookupDataTable LookupColumnIndex="{x:Null}" LookupDataColumn="{x:Null}" RowIndex="{x:Null}" TargetColumnIndex="{x:Null}" TargetDataColumn="{x:Null}" DataTable="[TemplatesPath]" DisplayName="Lookup FolderPath" sap:VirtualizedContainerService.HintSize="1329,22" sap2010:WorkflowViewState.IdRef="LookupDataTable_1" LookupColumnName="CampaignName" LookupValue="[in_TransactionItem.Item(&quot;CampaignName&quot;).ToString]" TargetColumnName="TemplatesPath">
+    <ui:LookupDataTable LookupColumnIndex="{x:Null}" LookupDataColumn="{x:Null}" RowIndex="{x:Null}" TargetColumnIndex="{x:Null}" TargetDataColumn="{x:Null}" DataTable="[TemplatesPath]" DisplayName="Lookup FolderPath" sap:VirtualizedContainerService.HintSize="837,22" sap2010:WorkflowViewState.IdRef="LookupDataTable_1" LookupColumnName="CampaignName" LookupValue="[in_TransactionItem.Item(&quot;CampaignName&quot;).ToString]" TargetColumnName="TemplatesPath">
       <ui:LookupDataTable.CellValue>
         <OutArgument x:TypeArguments="x:String">[path]</OutArgument>
       </ui:LookupDataTable.CellValue>
     </ui:LookupDataTable>
-    <ui:ReadRange AddHeaders="True" DataTable="[Templates]" DisplayName="Read Range" sap:VirtualizedContainerService.HintSize="1329,87" sap2010:WorkflowViewState.IdRef="ReadRange_2" SheetName="Templates" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
+    <ui:ReadRange AddHeaders="True" DataTable="[Templates]" DisplayName="Read Range" sap:VirtualizedContainerService.HintSize="837,87" sap2010:WorkflowViewState.IdRef="ReadRange_2" SheetName="Templates" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
       <ui:ReadRange.Range>
         <InArgument x:TypeArguments="x:String">
           <Literal x:TypeArguments="x:String" Value="" />
         </InArgument>
       </ui:ReadRange.Range>
     </ui:ReadRange>
-    <If Condition="[in_TransactionItem.Item(&quot;InitiatedDate&quot;).ToString=&quot;&quot;]" DisplayName="If First time Mailing" sap:VirtualizedContainerService.HintSize="1329,208" sap2010:WorkflowViewState.IdRef="If_1">
+    <If Condition="[in_TransactionItem.Item(&quot;InitiatedDate&quot;).ToString=&quot;&quot;]" DisplayName="If First time Mailing" sap:VirtualizedContainerService.HintSize="837,208" sap2010:WorkflowViewState.IdRef="If_1">
       <If.Then>
         <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_3">
           <Assign.To>
@@ -130,23 +135,23 @@
         </Assign>
       </If.Else>
     </If>
-    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[Templates]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="1329,1388" sap2010:WorkflowViewState.IdRef="ForEachRow_2">
+    <ui:ForEachRow CurrentIndex="{x:Null}" DataTable="[Templates]" DisplayName="For Each Row" sap:VirtualizedContainerService.HintSize="837,1350" sap2010:WorkflowViewState.IdRef="ForEachRow_2">
       <ui:ForEachRow.Body>
         <ActivityAction x:TypeArguments="sd:DataRow">
           <ActivityAction.Argument>
             <DelegateInArgument x:TypeArguments="sd:DataRow" Name="row" />
           </ActivityAction.Argument>
-          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="671,1240" sap2010:WorkflowViewState.IdRef="Sequence_9">
+          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="671,1202" sap2010:WorkflowViewState.IdRef="Sequence_9">
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
               </scg:Dictionary>
             </sap:WorkflowViewStateService.ViewState>
-            <If Condition="[row.Item(&quot;CampaignName&quot;).ToString = in_TransactionItem.Item(&quot;CampaignName&quot;).ToString]" DisplayName="If same campaign name" sap:VirtualizedContainerService.HintSize="629,1148" sap2010:WorkflowViewState.IdRef="If_6">
+            <If Condition="[row.Item(&quot;CampaignName&quot;).ToString = in_TransactionItem.Item(&quot;CampaignName&quot;).ToString]" DisplayName="If same campaign name" sap:VirtualizedContainerService.HintSize="629,1110" sap2010:WorkflowViewState.IdRef="If_6">
               <If.Then>
-                <If Condition="[row.Item(&quot;Day&quot;).ToString = Interval]" DisplayName="If " sap:VirtualizedContainerService.HintSize="484,1000" sap2010:WorkflowViewState.IdRef="If_5">
+                <If Condition="[row.Item(&quot;Day&quot;).ToString = Interval]" DisplayName="If " sap:VirtualizedContainerService.HintSize="484,962" sap2010:WorkflowViewState.IdRef="If_5">
                   <If.Then>
-                    <Sequence sap:VirtualizedContainerService.HintSize="304,852" sap2010:WorkflowViewState.IdRef="Sequence_14">
+                    <Sequence sap:VirtualizedContainerService.HintSize="304,814" sap2010:WorkflowViewState.IdRef="Sequence_14">
                       <Sequence.Variables>
                         <Variable x:TypeArguments="s:String[]" Name="filenames" />
                         <Variable x:TypeArguments="x:Int32" Name="random" />
@@ -189,14 +194,7 @@
                           <InArgument x:TypeArguments="x:String">[filenames.ElementAt(random)]</InArgument>
                         </Assign.Value>
                       </Assign>
-                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_8">
-                        <Assign.To>
-                          <OutArgument x:TypeArguments="ui:GenericValue">[subject]</OutArgument>
-                        </Assign.To>
-                        <Assign.Value>
-                          <InArgument x:TypeArguments="ui:GenericValue">[row.Item("Subject").ToString.Replace("&lt;name&gt;",in_TransactionItem.Item("Name").ToString)]</InArgument>
-                        </Assign.Value>
-                      </Assign>
+                      <the:TokenReplacer Output="{x:Null}" DataRow="[in_TransactionItem]" DisplayName="Token replacer" sap:VirtualizedContainerService.HintSize="262,22" sap2010:WorkflowViewState.IdRef="TokenReplacer_2" InputString="[subject]" />
                       <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_12">
                         <Assign.To>
                           <OutArgument x:TypeArguments="s:String[]">[subjects]</OutArgument>
@@ -215,10 +213,10 @@
                       </Assign>
                       <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_14">
                         <Assign.To>
-                          <OutArgument x:TypeArguments="x:String">[filename]</OutArgument>
+                          <OutArgument x:TypeArguments="ui:GenericValue">[subject]</OutArgument>
                         </Assign.To>
                         <Assign.Value>
-                          <InArgument x:TypeArguments="x:String">[subjects.ElementAt(random)]</InArgument>
+                          <InArgument x:TypeArguments="ui:GenericValue">[subjects.ElementAt(random)]</InArgument>
                         </Assign.Value>
                       </Assign>
                     </Sequence>
@@ -230,17 +228,17 @@
         </ActivityAction>
       </ui:ForEachRow.Body>
     </ui:ForEachRow>
-    <If Condition="[filename=&quot;&quot; Or  todaysDate.ToShortDateString = in_TransactionItem.Item(&quot;LastSentEmailDate&quot;).ToString]" sap:VirtualizedContainerService.HintSize="1329,2904" sap2010:WorkflowViewState.IdRef="If_3">
+    <If Condition="[filename=&quot;&quot; Or  todaysDate.ToShortDateString = in_TransactionItem.Item(&quot;LastSentEmailDate&quot;).ToString]" sap:VirtualizedContainerService.HintSize="837,1612" sap2010:WorkflowViewState.IdRef="If_3">
       <If.Else>
-        <Sequence sap:VirtualizedContainerService.HintSize="1184,2756" sap2010:WorkflowViewState.IdRef="Sequence_2">
+        <Sequence sap:VirtualizedContainerService.HintSize="692,1464" sap2010:WorkflowViewState.IdRef="Sequence_2">
           <sap:WorkflowViewStateService.ViewState>
             <scg:Dictionary x:TypeArguments="x:String, x:Object">
               <x:Boolean x:Key="IsExpanded">True</x:Boolean>
             </scg:Dictionary>
           </sap:WorkflowViewStateService.ViewState>
-          <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="1142,2664" sap2010:WorkflowViewState.IdRef="TryCatch_1">
+          <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="650,1372" sap2010:WorkflowViewState.IdRef="TryCatch_1">
             <TryCatch.Try>
-              <Sequence sap:VirtualizedContainerService.HintSize="1104,2437" sap2010:WorkflowViewState.IdRef="Sequence_8">
+              <Sequence sap:VirtualizedContainerService.HintSize="1488,5141" sap2010:WorkflowViewState.IdRef="Sequence_8">
                 <Sequence.Variables>
                   <Variable x:TypeArguments="scg:List(snm:MailMessage)" Name="mails" />
                 </Sequence.Variables>
@@ -249,7 +247,7 @@
                     <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
-                <If Condition="[filename.Contains(&quot;txt&quot;)]" sap:VirtualizedContainerService.HintSize="1062,383" sap2010:WorkflowViewState.IdRef="If_9">
+                <If Condition="[filename.Contains(&quot;txt&quot;)]" sap:VirtualizedContainerService.HintSize="1446,383" sap2010:WorkflowViewState.IdRef="If_9">
                   <If.Then>
                     <ui:ReadTextFile Content="[body]" DisplayName="Read Text File" FileName="[path+&quot;\&quot;+filename]" sap:VirtualizedContainerService.HintSize="334,132" sap2010:WorkflowViewState.IdRef="ReadTextFile_2" />
                   </If.Then>
@@ -261,15 +259,33 @@
                     </If>
                   </If.Else>
                 </If>
-                <Assign sap:VirtualizedContainerService.HintSize="1062,60" sap2010:WorkflowViewState.IdRef="Assign_6">
-                  <Assign.To>
-                    <OutArgument x:TypeArguments="x:String">[bodyFormatted]</OutArgument>
-                  </Assign.To>
-                  <Assign.Value>
-                    <InArgument x:TypeArguments="x:String">[body.Replace("&lt;name&gt;",in_TransactionItem.Item("Name").ToString)]</InArgument>
-                  </Assign.Value>
-                </Assign>
-                <Assign sap:VirtualizedContainerService.HintSize="1062,60" sap2010:WorkflowViewState.IdRef="Assign_7">
+                <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="1446,51" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+                  <ui:CommentOut.Body>
+                    <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="304,152" sap2010:WorkflowViewState.IdRef="Sequence_25">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_6">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:String">[bodyFormatted]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:String">[body.Replace("&lt;name&gt;",in_TransactionItem.Item("Name").ToString)]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                    </Sequence>
+                  </ui:CommentOut.Body>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                </ui:CommentOut>
+                <the:TokenReplacer DataRow="[in_TransactionItem]" DisplayName="Token replacer" sap:VirtualizedContainerService.HintSize="1446,22" sap2010:WorkflowViewState.IdRef="TokenReplacer_1" InputString="[body]" Output="[bodyFormatted]" />
+                <Assign sap:VirtualizedContainerService.HintSize="1446,60" sap2010:WorkflowViewState.IdRef="Assign_7">
                   <Assign.To>
                     <OutArgument x:TypeArguments="x:String">[bodyFormatted]</OutArgument>
                   </Assign.To>
@@ -277,25 +293,153 @@
                     <InArgument x:TypeArguments="x:String">[bodyFormatted.Replace(VbCrLf,"&lt;br/&gt;")]</InArgument>
                   </Assign.Value>
                 </Assign>
-                <If Condition="[Interval=&quot;0&quot;]" sap:VirtualizedContainerService.HintSize="1062,1257" sap2010:WorkflowViewState.IdRef="If_7">
+                <If Condition="[Interval=&quot;0&quot;]" sap:VirtualizedContainerService.HintSize="1446,2379" sap2010:WorkflowViewState.IdRef="If_7">
                   <If.Then>
-                    <Sequence sap:VirtualizedContainerService.HintSize="376,547" sap2010:WorkflowViewState.IdRef="Sequence_10">
+                    <Sequence sap:VirtualizedContainerService.HintSize="568,2231" sap2010:WorkflowViewState.IdRef="Sequence_10">
                       <sap:WorkflowViewStateService.ViewState>
                         <scg:Dictionary x:TypeArguments="x:String, x:Object">
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <ui:SendOutlookMail Account="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Bcc="[in_TransactionItem.Item(&quot;BCC&quot;).ToString]" Body="[&quot;&lt;p&gt;&quot;+bodyFormatted+&quot;&lt;/p&gt;&quot;]" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,145" sap2010:WorkflowViewState.IdRef="SendOutlookMail_2" IsBodyHtml="True" IsDraft="False" Subject="[subject]" To="[in_TransactionItem.Item(&quot;Email&quot;).ToString]">
+                      <ui:SendOutlookMail Account="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Bcc="[in_TransactionItem.Item(&quot;BCC&quot;).ToString]" Body="[&quot;&lt;p&gt;&quot;+bodyFormatted+&quot;&lt;/p&gt;&quot;]" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="526,145" sap2010:WorkflowViewState.IdRef="SendOutlookMail_2" IsBodyHtml="True" IsDraft="False" Subject="[subject]" To="[in_TransactionItem.Item(&quot;Email&quot;).ToString]">
                         <ui:SendOutlookMail.Files>
                           <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
                         </ui:SendOutlookMail.Files>
                       </ui:SendOutlookMail>
-                      <ui:WriteCell Cell="[&quot;E&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="334,115" sap2010:WorkflowViewState.IdRef="WriteCell_1" SheetName="EmailDetails" Text="[todaysDate.ToShortDateString]" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
-                      <ui:WriteCell Cell="[&quot;G&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="334,115" sap2010:WorkflowViewState.IdRef="WriteCell_5" SheetName="EmailDetails" Text="1" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
+                      <Sequence DisplayName="Column Name calc" sap:VirtualizedContainerService.HintSize="526,802" sap2010:WorkflowViewState.IdRef="Sequence_16">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_16">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:Int32">[in_TransactionItem.Table.Columns.IndexOf("InitiatedDate")+1]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_17">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <While sap:VirtualizedContainerService.HintSize="484,510" sap2010:WorkflowViewState.IdRef="While_1">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <While.Condition>[Column_Number&gt;0]</While.Condition>
+                          <Sequence sap:VirtualizedContainerService.HintSize="304,352" sap2010:WorkflowViewState.IdRef="Sequence_15">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_18">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[modulo]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[(Column_Number-1) mod 26]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_19">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:String">[Convert.ToChar(65 + modulo).ToString()+name_column]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_20">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32((Column_Number - modulo) / 26)]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                          </Sequence>
+                        </While>
+                      </Sequence>
+                      <ui:WriteCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="526,115" sap2010:WorkflowViewState.IdRef="WriteCell_1" SheetName="EmailDetails" Text="[todaysDate.ToShortDateString]" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
+                      <Sequence DisplayName="Column Name calc" sap:VirtualizedContainerService.HintSize="526,802" sap2010:WorkflowViewState.IdRef="Sequence_18">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_21">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:Int32">[in_TransactionItem.Table.Columns.IndexOf("NumberOfEmailSent")+1]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_22">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <While sap:VirtualizedContainerService.HintSize="484,510" sap2010:WorkflowViewState.IdRef="While_2">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <While.Condition>[Column_Number&gt;0]</While.Condition>
+                          <Sequence sap:VirtualizedContainerService.HintSize="304,352" sap2010:WorkflowViewState.IdRef="Sequence_17">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_23">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[modulo]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[(Column_Number-1) mod 26]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_24">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:String">[Convert.ToChar(65 + modulo).ToString()+name_column]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_25">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32((Column_Number - modulo) / 26)]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                          </Sequence>
+                        </While>
+                      </Sequence>
+                      <ui:WriteCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="526,115" sap2010:WorkflowViewState.IdRef="WriteCell_5" SheetName="EmailDetails" Text="1" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
                     </Sequence>
                   </If.Then>
                   <If.Else>
-                    <Sequence sap:VirtualizedContainerService.HintSize="641,1109" sap2010:WorkflowViewState.IdRef="Sequence_11">
+                    <Sequence sap:VirtualizedContainerService.HintSize="833,1951" sap2010:WorkflowViewState.IdRef="Sequence_11">
                       <Sequence.Variables>
                         <Variable x:TypeArguments="ui:GenericValue" Name="lastDate" />
                       </Sequence.Variables>
@@ -304,39 +448,103 @@
                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                         </scg:Dictionary>
                       </sap:WorkflowViewStateService.ViewState>
-                      <ui:GetOutlookMailMessages Account="{x:Null}" Filter="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Get Outlook Mail Messages" GetAttachements="False" sap:VirtualizedContainerService.HintSize="599,22" sap2010:WorkflowViewState.IdRef="GetOutlookMailMessages_1" MailFolder="Sent" MarkAsRead="False" Messages="[mails]" OnlyUnreadMessages="False" Top="100" />
-                      <ui:ForEach x:TypeArguments="snm:MailMessage" CurrentIndex="{x:Null}" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="599,955" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[mails]">
+                      <ui:GetOutlookMailMessages Account="{x:Null}" Filter="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Get Outlook Mail Messages" GetAttachements="False" sap:VirtualizedContainerService.HintSize="791,22" sap2010:WorkflowViewState.IdRef="GetOutlookMailMessages_1" MailFolder="Sent" MarkAsRead="False" Messages="[mails]" OnlyUnreadMessages="False" Top="100" />
+                      <ui:ForEach x:TypeArguments="snm:MailMessage" CurrentIndex="{x:Null}" DisplayName="For Each" sap:VirtualizedContainerService.HintSize="791,1797" sap2010:WorkflowViewState.IdRef="ForEach`1_1" Values="[mails]">
                         <ui:ForEach.Body>
                           <ActivityAction x:TypeArguments="snm:MailMessage">
                             <ActivityAction.Argument>
                               <DelegateInArgument x:TypeArguments="snm:MailMessage" Name="mail" />
                             </ActivityAction.Argument>
-                            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="563,821" sap2010:WorkflowViewState.IdRef="Sequence_13">
+                            <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="755,1663" sap2010:WorkflowViewState.IdRef="Sequence_13">
                               <sap:WorkflowViewStateService.ViewState>
                                 <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                   <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                 </scg:Dictionary>
                               </sap:WorkflowViewStateService.ViewState>
-                              <If Condition="[mail.To.ToString.Contains(in_TransactionItem.Item(&quot;Email&quot;).ToString)]" sap:VirtualizedContainerService.HintSize="521,729" sap2010:WorkflowViewState.IdRef="If_8">
+                              <If Condition="[mail.To.ToString.Contains(in_TransactionItem.Item(&quot;Email&quot;).ToString)]" sap:VirtualizedContainerService.HintSize="713,1571" sap2010:WorkflowViewState.IdRef="If_8">
                                 <If.Then>
-                                  <Sequence sap:VirtualizedContainerService.HintSize="376,581" sap2010:WorkflowViewState.IdRef="Sequence_12">
+                                  <Sequence sap:VirtualizedContainerService.HintSize="568,1423" sap2010:WorkflowViewState.IdRef="Sequence_12">
                                     <sap:WorkflowViewStateService.ViewState>
                                       <scg:Dictionary x:TypeArguments="x:String, x:Object">
                                         <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                       </scg:Dictionary>
                                     </sap:WorkflowViewStateService.ViewState>
-                                    <ui:SendOutlookMail Account="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Bcc="[in_TransactionItem.Item(&quot;BCC&quot;).ToString]" Body="[bodyFormatted+&quot;&lt;br/&gt;-------------------------------------------------------------------------------------------------------------------------------------------&lt;br/&gt;&lt;b&gt;From: &lt;/b&gt;&quot;+mail.Sender.ToString+&quot;&lt;br/&gt;&lt;b&gt;Sent: &lt;/b&gt;&quot;+Convert.ToDateTime(mail.Headers(&quot;Date&quot;)).ToLongDateString+&quot; &quot;+Convert.ToDateTime(mail.Headers(&quot;Date&quot;)).ToShortTimeString+&quot;&lt;br/&gt;&lt;b&gt;To: &lt;/b&gt;&quot;+mail.To.ToString+&quot;&lt;br/&gt;&lt;b&gt;Subject: &lt;/b&gt;&quot;+mail.Subject+&quot;&lt;br/&gt;&lt;br/&gt;&quot;+mail.Headers(&quot;HTMLBody&quot;)]" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,145" sap2010:WorkflowViewState.IdRef="SendOutlookMail_3" IsBodyHtml="True" IsDraft="False" Subject="[&quot;RE: &quot;+subject]" To="[mail.To.ToString]">
+                                    <ui:SendOutlookMail Account="{x:Null}" Cc="{x:Null}" MailMessage="{x:Null}" TimeoutMS="{x:Null}" Bcc="[in_TransactionItem.Item(&quot;BCC&quot;).ToString]" Body="[bodyFormatted+&quot;&lt;br/&gt;-------------------------------------------------------------------------------------------------------------------------------------------&lt;br/&gt;&lt;b&gt;From: &lt;/b&gt;&quot;+mail.Sender.ToString+&quot;&lt;br/&gt;&lt;b&gt;Sent: &lt;/b&gt;&quot;+Convert.ToDateTime(mail.Headers(&quot;Date&quot;)).ToLongDateString+&quot; &quot;+Convert.ToDateTime(mail.Headers(&quot;Date&quot;)).ToShortTimeString+&quot;&lt;br/&gt;&lt;b&gt;To: &lt;/b&gt;&quot;+mail.To.ToString+&quot;&lt;br/&gt;&lt;b&gt;Subject: &lt;/b&gt;&quot;+mail.Subject+&quot;&lt;br/&gt;&lt;br/&gt;&quot;+mail.Headers(&quot;HTMLBody&quot;)]" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="526,145" sap2010:WorkflowViewState.IdRef="SendOutlookMail_3" IsBodyHtml="True" IsDraft="False" Subject="[&quot;RE: &quot;+subject]" To="[mail.To.ToString]">
                                       <ui:SendOutlookMail.Files>
                                         <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
                                       </ui:SendOutlookMail.Files>
                                     </ui:SendOutlookMail>
-                                    <ui:ReadCell Cell="[&quot;G&quot;+(in_TransactionNumber+1).toString]" DisplayName="Read Cell" sap:VirtualizedContainerService.HintSize="334,87" sap2010:WorkflowViewState.IdRef="ReadCell_1" SheetName="EmailDetails" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
+                                    <Sequence DisplayName="Column Name calc" sap:VirtualizedContainerService.HintSize="526,802" sap2010:WorkflowViewState.IdRef="Sequence_20">
+                                      <sap:WorkflowViewStateService.ViewState>
+                                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                        </scg:Dictionary>
+                                      </sap:WorkflowViewStateService.ViewState>
+                                      <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_26">
+                                        <Assign.To>
+                                          <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                                        </Assign.To>
+                                        <Assign.Value>
+                                          <InArgument x:TypeArguments="x:Int32">[in_TransactionItem.Table.Columns.IndexOf("NumberOfEmailSent")+1]</InArgument>
+                                        </Assign.Value>
+                                      </Assign>
+                                      <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_27">
+                                        <Assign.To>
+                                          <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                                        </Assign.To>
+                                        <Assign.Value>
+                                          <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+                                        </Assign.Value>
+                                      </Assign>
+                                      <While sap:VirtualizedContainerService.HintSize="484,510" sap2010:WorkflowViewState.IdRef="While_3">
+                                        <sap:WorkflowViewStateService.ViewState>
+                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                          </scg:Dictionary>
+                                        </sap:WorkflowViewStateService.ViewState>
+                                        <While.Condition>[Column_Number&gt;0]</While.Condition>
+                                        <Sequence sap:VirtualizedContainerService.HintSize="304,352" sap2010:WorkflowViewState.IdRef="Sequence_19">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_28">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:Int32">[modulo]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:Int32">[(Column_Number-1) mod 26]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                          <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_29">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:String">[Convert.ToChar(65 + modulo).ToString()+name_column]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                          <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_30">
+                                            <Assign.To>
+                                              <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                                            </Assign.To>
+                                            <Assign.Value>
+                                              <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32((Column_Number - modulo) / 26)]</InArgument>
+                                            </Assign.Value>
+                                          </Assign>
+                                        </Sequence>
+                                      </While>
+                                    </Sequence>
+                                    <ui:ReadCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Read Cell" sap:VirtualizedContainerService.HintSize="526,87" sap2010:WorkflowViewState.IdRef="ReadCell_1" SheetName="EmailDetails" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
                                       <ui:ReadCell.Result>
                                         <OutArgument x:TypeArguments="ui:GenericValue">[lastDate]</OutArgument>
                                       </ui:ReadCell.Result>
                                     </ui:ReadCell>
-                                    <ui:WriteCell Cell="[&quot;G&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="334,115" sap2010:WorkflowViewState.IdRef="WriteCell_6" SheetName="EmailDetails" Text="[(Integer.Parse(lastDate)+1).ToString]" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
-                                    <ui:Break sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Break_1" />
+                                    <ui:WriteCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="526,115" sap2010:WorkflowViewState.IdRef="WriteCell_6" SheetName="EmailDetails" Text="[(Integer.Parse(lastDate)+1).ToString]" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
+                                    <ui:Break sap:VirtualizedContainerService.HintSize="526,22" sap2010:WorkflowViewState.IdRef="Break_1" />
                                   </Sequence>
                                 </If.Then>
                               </If>
@@ -347,15 +555,136 @@
                     </Sequence>
                   </If.Else>
                 </If>
-                <ui:WriteCell Cell="[&quot;F&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="1062,115" sap2010:WorkflowViewState.IdRef="WriteCell_4" SheetName="EmailDetails" Text="[todaysDate.ToShortDateString]" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
-                <ui:WriteCell Cell="[&quot;K&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="1062,115" sap2010:WorkflowViewState.IdRef="WriteCell_3" SheetName="EmailDetails" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
-                  <ui:WriteCell.Text>
-                    <InArgument x:TypeArguments="x:String">
-                      <Literal x:TypeArguments="x:String" Value="" />
-                    </InArgument>
-                  </ui:WriteCell.Text>
-                </ui:WriteCell>
-                <ui:WriteCell Cell="[&quot;L&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="1062,115" sap2010:WorkflowViewState.IdRef="WriteCell_7" SheetName="EmailDetails" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
+                <Sequence DisplayName="Column Name calc" sap:VirtualizedContainerService.HintSize="1446,802" sap2010:WorkflowViewState.IdRef="Sequence_22">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_31">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Int32">[in_TransactionItem.Table.Columns.IndexOf("LastSentEmailDate")+1]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_32">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <While sap:VirtualizedContainerService.HintSize="484,510" sap2010:WorkflowViewState.IdRef="While_4">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <While.Condition>[Column_Number&gt;0]</While.Condition>
+                    <Sequence sap:VirtualizedContainerService.HintSize="304,352" sap2010:WorkflowViewState.IdRef="Sequence_21">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_33">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Int32">[modulo]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Int32">[(Column_Number-1) mod 26]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_34">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:String">[Convert.ToChar(65 + modulo).ToString()+name_column]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_35">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32((Column_Number - modulo) / 26)]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                    </Sequence>
+                  </While>
+                </Sequence>
+                <ui:WriteCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="1446,115" sap2010:WorkflowViewState.IdRef="WriteCell_4" SheetName="EmailDetails" Text="[todaysDate.ToShortDateString]" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
+                <Sequence DisplayName="Column Name calc" sap:VirtualizedContainerService.HintSize="1446,802" sap2010:WorkflowViewState.IdRef="Sequence_24">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_36">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Int32">[in_TransactionItem.Table.Columns.IndexOf("ERROR")+1]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_37">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <While sap:VirtualizedContainerService.HintSize="484,510" sap2010:WorkflowViewState.IdRef="While_5">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <While.Condition>[Column_Number&gt;0]</While.Condition>
+                    <Sequence sap:VirtualizedContainerService.HintSize="304,352" sap2010:WorkflowViewState.IdRef="Sequence_23">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_38">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Int32">[modulo]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Int32">[(Column_Number-1) mod 26]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_39">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:String">[Convert.ToChar(65 + modulo).ToString()+name_column]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                      <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_40">
+                        <Assign.To>
+                          <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                        </Assign.To>
+                        <Assign.Value>
+                          <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32((Column_Number - modulo) / 26)]</InArgument>
+                        </Assign.Value>
+                      </Assign>
+                    </Sequence>
+                  </While>
+                </Sequence>
+                <ui:WriteCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="1446,115" sap2010:WorkflowViewState.IdRef="WriteCell_3" SheetName="EmailDetails" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]">
                   <ui:WriteCell.Text>
                     <InArgument x:TypeArguments="x:String">
                       <Literal x:TypeArguments="x:String" Value="" />
@@ -365,10 +694,10 @@
               </Sequence>
             </TryCatch.Try>
             <TryCatch.Catches>
-              <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="1108,21" sap2010:WorkflowViewState.IdRef="Catch`1_1">
+              <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="616,1210" sap2010:WorkflowViewState.IdRef="Catch`1_1">
                 <sap:WorkflowViewStateService.ViewState>
                   <scg:Dictionary x:TypeArguments="x:String, x:Object">
-                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                     <x:Boolean x:Key="IsPinned">False</x:Boolean>
                   </scg:Dictionary>
                 </sap:WorkflowViewStateService.ViewState>
@@ -376,7 +705,85 @@
                   <ActivityAction.Argument>
                     <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
                   </ActivityAction.Argument>
-                  <ui:WriteCell Cell="[&quot;K&quot;+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="334,115" sap2010:WorkflowViewState.IdRef="WriteCell_2" SheetName="EmailDetails" Text="Error Occured Check the template and All details" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
+                  <Sequence sap:VirtualizedContainerService.HintSize="610,1141" sap2010:WorkflowViewState.IdRef="Sequence_29">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <Sequence sap:VirtualizedContainerService.HintSize="568,1049" sap2010:WorkflowViewState.IdRef="Sequence_28">
+                      <sap:WorkflowViewStateService.ViewState>
+                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        </scg:Dictionary>
+                      </sap:WorkflowViewStateService.ViewState>
+                      <Sequence DisplayName="Column Name calc" sap:VirtualizedContainerService.HintSize="526,802" sap2010:WorkflowViewState.IdRef="Sequence_27">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_41">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:Int32">[in_TransactionItem.Table.Columns.IndexOf("ERROR")+1]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_42">
+                          <Assign.To>
+                            <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                          </Assign.To>
+                          <Assign.Value>
+                            <InArgument x:TypeArguments="x:String">[String.Empty]</InArgument>
+                          </Assign.Value>
+                        </Assign>
+                        <While sap:VirtualizedContainerService.HintSize="484,510" sap2010:WorkflowViewState.IdRef="While_6">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <While.Condition>[Column_Number&gt;0]</While.Condition>
+                          <Sequence sap:VirtualizedContainerService.HintSize="304,352" sap2010:WorkflowViewState.IdRef="Sequence_26">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_43">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[modulo]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[(Column_Number-1) mod 26]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_44">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:String">[name_column]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:String">[Convert.ToChar(65 + modulo).ToString()+name_column]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_45">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Int32">[Convert.ToInt32((Column_Number - modulo) / 26)]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                          </Sequence>
+                        </While>
+                      </Sequence>
+                      <ui:WriteCell Cell="[name_column+(in_TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="526,115" sap2010:WorkflowViewState.IdRef="WriteCell_2" SheetName="EmailDetails" Text="Error Occured Check the template and All details" WorkbookPath="[in_Config.Item(&quot;InputList&quot;).ToString]" />
+                    </Sequence>
+                  </Sequence>
                 </ActivityAction>
               </Catch>
             </TryCatch.Catches>
@@ -384,15 +791,14 @@
         </Sequence>
       </If.Else>
     </If>
-    <Assign sap:VirtualizedContainerService.HintSize="1329,60" sap2010:WorkflowViewState.IdRef="Assign_15">
+    <Assign sap:VirtualizedContainerService.HintSize="837,60" sap2010:WorkflowViewState.IdRef="Assign_15">
       <Assign.To>
         <OutArgument x:TypeArguments="x:TimeSpan">[delay]</OutArgument>
       </Assign.To>
       <Assign.Value>
-        <InArgument x:TypeArguments="x:TimeSpan">[Timespan.Parse("00:00:01:"+New Random().Next(1,59).ToString)]</InArgument>
+        <InArgument x:TypeArguments="x:TimeSpan">[Timespan.Parse("00:00:00:"+New Random().Next(30,59).ToString)]</InArgument>
       </Assign.Value>
     </Assign>
-    <ui:MessageBox Caption="{x:Null}" ChosenButton="{x:Null}" Buttons="Ok" DisplayName="Message Box" sap:VirtualizedContainerService.HintSize="1329,59" sap2010:WorkflowViewState.IdRef="MessageBox_1" Text="[delay.ToString]" TopMost="True" />
-    <Delay Duration="[delay]" sap:VirtualizedContainerService.HintSize="1329,22" sap2010:WorkflowViewState.IdRef="Delay_2" />
+    <Delay Duration="[delay]" sap:VirtualizedContainerService.HintSize="837,22" sap2010:WorkflowViewState.IdRef="Delay_2" />
   </Sequence>
 </Activity>
