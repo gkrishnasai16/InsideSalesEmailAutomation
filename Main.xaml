@@ -1,4 +1,4 @@
-<Activity mc:Ignorable="sap sap2010" x:Class="Main" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="836,846" sap2010:WorkflowViewState.IdRef="Main2_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:snm="clr-namespace:System.Net.Mail;assembly=System" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" mva:VisualBasic.Settings="{x:Null}" sap:VirtualizedContainerService.HintSize="836,886" sap2010:WorkflowViewState.IdRef="Main2_1" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:av="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:snm="clr-namespace:System.Net.Mail;assembly=System" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <TextExpression.NamespacesForImplementation>
     <scg:List x:TypeArguments="x:String" Capacity="26">
       <x:String>System.Activities</x:String>
@@ -202,7 +202,7 @@
                           <InArgument x:TypeArguments="ui:BusinessRuleException">[Nothing]</InArgument>
                         </Assign.Value>
                       </Assign>
-                      <If Condition="[TransactionItem.Item(&quot;Terminate&quot;).ToString=&quot;&quot; or TransactionItem.Item(&quot;Terminate&quot;).ToString=&quot;No&quot;]" sap:VirtualizedContainerService.HintSize="1020,3663" sap2010:WorkflowViewState.IdRef="If_9">
+                      <If Condition="[TransactionItem.Item(&quot;Terminate.&quot;).ToString=&quot;&quot; or TransactionItem.Item(&quot;Terminate.&quot;).ToString=&quot;No&quot;]" sap:VirtualizedContainerService.HintSize="1020,3663" sap2010:WorkflowViewState.IdRef="If_9">
                         <If.Then>
                           <Sequence sap:VirtualizedContainerService.HintSize="875,3515" sap2010:WorkflowViewState.IdRef="Sequence_23">
                             <sap:WorkflowViewStateService.ViewState>
@@ -229,7 +229,7 @@
                                           <x:Boolean x:Key="IsExpanded">True</x:Boolean>
                                         </scg:Dictionary>
                                       </sap:WorkflowViewStateService.ViewState>
-                                      <If Condition="[item.From.Address.Contains(TransactionItem.Item(&quot;Email&quot;).ToString)]" sap:VirtualizedContainerService.HintSize="713,2768" sap2010:WorkflowViewState.IdRef="If_10">
+                                      <If Condition="[item.From.Address.Contains(TransactionItem.Item(&quot;Email.&quot;).ToString)]" sap:VirtualizedContainerService.HintSize="713,2768" sap2010:WorkflowViewState.IdRef="If_10">
                                         <If.Then>
                                           <Sequence sap:VirtualizedContainerService.HintSize="568,2620" sap2010:WorkflowViewState.IdRef="Sequence_25">
                                             <sap:WorkflowViewStateService.ViewState>
@@ -249,7 +249,7 @@
                                                   <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
                                                 </Assign.To>
                                                 <Assign.Value>
-                                                  <InArgument x:TypeArguments="x:Int32">[TransactionData.Columns.IndexOf("Response")+1]</InArgument>
+                                                  <InArgument x:TypeArguments="x:Int32">[TransactionData.Columns.IndexOf("Response.")+1]</InArgument>
                                                 </Assign.Value>
                                               </Assign>
                                               <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_19">
@@ -304,7 +304,7 @@
                                             <ui:WriteCell Cell="[name_column+(TransactionNumber+1).toString]" DisplayName="Write Cell" sap:VirtualizedContainerService.HintSize="526,115" sap2010:WorkflowViewState.IdRef="WriteCell_1" SheetName="EmailDetails" Text="Responded" WorkbookPath="[Config.Item(&quot;InputList&quot;).ToString]" />
                                             <TryCatch DisplayName="Try Catch" sap:VirtualizedContainerService.HintSize="526,372" sap2010:WorkflowViewState.IdRef="TryCatch_7">
                                               <TryCatch.Try>
-                                                <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Body="{x:Null}" Cc="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,145" sap2010:WorkflowViewState.IdRef="SendOutlookMail_1" IsBodyHtml="False" IsDraft="False" MailMessage="[item]" Subject="[&quot;Response from&quot;+item.From.Address]" To="[TransactionItem.Item(&quot;ForwardTo&quot;).ToString]">
+                                                <ui:SendOutlookMail Account="{x:Null}" Bcc="{x:Null}" Body="{x:Null}" Cc="{x:Null}" TimeoutMS="{x:Null}" DisplayName="Send Outlook Mail Message" sap:VirtualizedContainerService.HintSize="334,145" sap2010:WorkflowViewState.IdRef="SendOutlookMail_1" IsBodyHtml="False" IsDraft="False" MailMessage="[item]" Subject="[&quot;Response from&quot;+item.From.Address]" To="[TransactionItem.Item(&quot;ForwardTo.&quot;).ToString]">
                                                   <ui:SendOutlookMail.Files>
                                                     <scg:List x:TypeArguments="InArgument(x:String)" Capacity="0" />
                                                   </ui:SendOutlookMail.Files>
@@ -338,7 +338,7 @@
                                                   <OutArgument x:TypeArguments="x:Int32">[Column_Number]</OutArgument>
                                                 </Assign.To>
                                                 <Assign.Value>
-                                                  <InArgument x:TypeArguments="x:Int32">[TransactionData.Columns.IndexOf("Terminate")+1]</InArgument>
+                                                  <InArgument x:TypeArguments="x:Int32">[TransactionData.Columns.IndexOf("Terminate.")+1]</InArgument>
                                                 </Assign.Value>
                                               </Assign>
                                               <Assign sap:VirtualizedContainerService.HintSize="484,60" sap2010:WorkflowViewState.IdRef="Assign_29">
